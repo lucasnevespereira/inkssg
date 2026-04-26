@@ -45,6 +45,10 @@ To change the page, edit `my-site/pages/index/content.md` and run `inkssg build 
 
 ## Use as a library
 
+```
+go get github.com/snowztech/inkssg
+```
+
 ```go
 import "github.com/snowztech/inkssg"
 
