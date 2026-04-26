@@ -1,0 +1,10 @@
+# bins
+bin/
+
+# editors
+.vscode
+.zed
+.idea
+
+# FS
+.DS_STORE
