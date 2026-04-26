@@ -3,9 +3,14 @@
 A small static site generator in Go. Built for sites with a couple of pages.
 Sites with a couple of pages should not need 20 dependencies and a webpack config.
 
-## Status
+Use as a library or CLI. No config needed for simple sites.
 
-Early. v0.1 in progress.
+Features:
+- Markdown for prose, raw HTML when you need full control
+- Frontmatter for page metadata, ink.yaml for site-wide data
+- Theme system with shared layout
+- Single assets/ directory
+- No node, no plugins
 
 ## Quick start (library)
 
@@ -80,9 +85,11 @@ links:
 
 Use `ink.yaml` when you need site-wide data shared across pages. Not required for simple sites.
 
-## Philosophy
+## Documentation
 
-See [PHILOSOPHY.md](PHILOSOPHY.md) for design principles and [ROADMAP.md](ROADMAP.md) for what's next.
+- [docs/inkssg.md](docs/inkssg.md) - full user docs
+- [PRINCIPLES.md](PRINCIPLES.md) - design principles
+- [ROADMAP.md](ROADMAP.md) - what's next
 
 ## License
 

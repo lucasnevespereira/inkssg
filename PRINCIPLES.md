@@ -1,4 +1,4 @@
-# Philosophy
+# Principles
 
 Small sites should not need 20 dependencies and a webpack config.
 
@@ -8,7 +8,7 @@ Sometimes you just need a one-page site. You shouldn't need a framework to build
 
 inkssg is for when you want to edit one file, run one command, and deploy. No config needed for simple sites.
 
-## Design principles
+## Principles
 
 **1. Library-first, CLI second**
 
