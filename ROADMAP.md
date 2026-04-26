@@ -1,11 +1,22 @@
 # Roadmap
 
-## v0.1 — Usable for a real site
+## v0.1 — Library-first DX
 
-Goal: a user can `inkssg new` a site, `inkssg build` it, and deploy. lucasnp.dev runs on this.
+Goal: a user can `go get` inkssg and have a site running in minutes. No config needed for simple sites.
+
+### Library API (primary DX)
+- [ ] `inkssg.Build()` — no args, defaults to current directory
+- [ ] `inkssg.Build(dir)` — explicit path (same behavior as CLI)
+- [ ] Auto-detect site structure (no `ink.yaml` required)
+- [ ] Defaults: `minimal` theme, `public/` output, `pages/` dir
+- [ ] Clear error if not a valid site: "No `pages/` folder found. Run `inkssg new .` to scaffold."
+
+### CLI surface (wraps library)
+- [ ] `inkssg build` — calls `inkssg.Build(".")`
+- [ ] `inkssg new <path>` — scaffold from template
+- [ ] `inkssg version`
 
 ### Build core
-- [ ] `inkssg build` — read `inkssg.yaml`, build all pages, output to `public/`
 - [ ] Discover pages under `pages/<name>/`
 - [ ] Parse YAML frontmatter from `content.md` and `content.html`
 - [ ] Render markdown with goldmark (autoid for headings)
@@ -24,42 +35,36 @@ Goal: a user can `inkssg new` a site, `inkssg build` it, and deploy. lucasnp.dev
 ### Assets
 - [ ] Copy `assets/*` → `public/assets/` (one rule, no per-page folders)
 
-### CLI surface
-- [ ] `inkssg new <path>` — scaffold a site from `examples/minimal/` template
-- [ ] `inkssg build`
-- [ ] `inkssg version`
-
 ### Examples + CI
+- [ ] `examples/library/` — `go run main.go` builds the site
 - [ ] `examples/minimal/` — 1 page, default theme
 - [ ] `examples/multi-page/` — multiple pages, shared theme
-- [ ] `examples/custom-theme/` — site with its own theme
 - [ ] CI: build every example on push
 
-## v0.2 — Make daily iteration painless
+Note: `ink.yaml` is optional in v0.1. Add it only when you need site-wide data (name, links, bio).
+
+## v0.2 — Polish + daily iteration
 
 - [ ] `inkssg serve` — local server with file watcher and auto-rebuild
-- [ ] Stable public library API: `site.New(opts...)`, `site.Build()`
 - [ ] Options: `FromConfig`, `WithTheme`, `WithOutputDir`, `WithPagesDir`
 - [ ] Hooks: `BeforeBuild`, `AfterBuild`
-- [ ] `examples/library/` — programmatic usage from Go
+- [ ] CSS/JS minification
+- [ ] Sitemap generation
 
-## v0.3 — Polish + community
+## v0.3 — Community niceties
 
-- [ ] `inkssg theme eject <name>` — copy a built-in theme into local `themes/`
-- [ ] `inkssg theme list` — show available themes (built-in + local)
-- [ ] "Did you mean" suggestions on errors (typos in theme names, frontmatter fields)
-- [ ] `inkssg validate` — check config and frontmatter without building
+- [ ] `inkssg theme eject <name>` — copy built-in theme into local `themes/`
+- [ ] `inkssg theme list` — show available themes
+- [ ] "Did you mean" suggestions on typos
+- [ ] `inkssg validate` — check config without building
 
 ## v0.4 — Production niceties
 
-- [ ] CSS/JS minification (port from lucasnp.dev's existing build)
-- [ ] Sitemap generation
-- [ ] `inkssg build --strict` — fail on warnings (broken internal links, missing alt text)
+- [ ] `inkssg build --strict` — fail on warnings (broken links, missing alt text)
 
 ## v0.5 — Theme sharing
 
 - [ ] `inkssg theme add <git-url>` — clone a theme repo into `themes/`
-- [ ] Optional `theme.yaml` manifest (name, version, author)
 
 ## Non-goals (forever, unless very strong demand)
 

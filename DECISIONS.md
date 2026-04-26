@@ -107,15 +107,15 @@ Stderr for errors, stdout for the summary line.
 
 **Decision:** `minimal`.
 
-The built-in theme shipped via `go:embed` is named `minimal`. If `inkssg.yaml` doesn't specify `default_theme`, falls back to `minimal`.
+The built-in theme shipped via `go:embed` is named `minimal`. If `ink.yaml` doesn't specify `default_theme`, falls back to `minimal`.
 
 **Why:** clearly communicates "this is a basic theme, customize or replace it".
 
 ## Config file name
 
-**Decision:** `inkssg.yaml`.
+**Decision:** `ink.yaml`.
 
-**Why:** explicit, tool-named-file convention (`astro.config.mjs`, `next.config.js`). Searchable. Not confused with other yaml files in the project.
+Why: short, easy to type, not confused with other yaml files.
 
 ## Frontmatter format
 
