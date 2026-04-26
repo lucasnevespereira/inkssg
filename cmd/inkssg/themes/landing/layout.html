@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{.Page.Title}}</title>
+  <meta name="description" content="{{.Page.Description}}" />
+  <meta property="og:title" content="{{.Site.Name}}" />
+  <meta property="og:description" content="{{.Page.Description}}" />
+  {{if .Site.Avatar}}
+  <meta property="og:image" content="{{.Site.Avatar}}" />
+  {{end}}
+  <meta property="og:type" content="website" />
+  {{if .Site.Avatar}}
+  <link rel="icon" type="image/png" href="{{.Site.Avatar}}" />
+  {{end}}
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/themes/landing/styles.css" />
+</head>
+<body>
+  <main>
+    {{if .Site.Avatar}}
+    <img class="avatar" src="{{.Site.Avatar}}" alt="{{.Site.Name}}" />
+    {{end}}
+
+    <h1 class="name">{{.Site.Name}}</h1>
+
+    <p class="tagline">{{.Content}}</p>
+
+    {{if .Site.Links}}
+    <nav class="links">
+      {{range .Site.Links}}
+      <a href="{{.URL}}" target="_blank" rel="noopener">
+        {{.Name}}
+      </a>
+      {{end}}
+    </nav>
+    {{end}}
+
+    {{if .Site.Install}}
+    <div class="install">
+      <code><span class="prompt">$</span> {{.Site.Install}}</code>
+    </div>
+    {{end}}
+
+    <footer class="footer">
+      <div>© 2026 snowztech</div>
+    </footer>
+  </main>
+</body>
+</html>

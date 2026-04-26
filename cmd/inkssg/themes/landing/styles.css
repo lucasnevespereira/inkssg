@@ -1,0 +1,122 @@
+:root {
+  --bg: #0a0a0b;
+  --fg: #e8e8e8;
+  --muted: #8a8a8a;
+  --panel: #141416;
+  --panel-border: #222225;
+  --accent: #f0f0f0;
+  --warm: #f4a261;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+main {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 80px 24px 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.avatar {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--panel-border);
+  margin-bottom: 24px;
+  box-shadow: 0 0 60px 8px rgba(244, 162, 97, 0.12);
+}
+
+.name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 20px;
+  letter-spacing: 0;
+}
+
+.tagline {
+  font-weight: 400;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--fg);
+  margin-bottom: 48px;
+  letter-spacing: 0;
+}
+
+.tagline br { display: block; }
+
+.links {
+  display: flex;
+  gap: 40px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--fg);
+  text-decoration: none;
+  font-size: 1rem;
+  opacity: 0.9;
+  transition: color 0.15s, opacity 0.15s;
+}
+
+.links a:hover { color: var(--warm); opacity: 1; }
+
+.install {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  width: 100%;
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  padding: 14px 18px;
+  margin-bottom: 32px;
+  font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  font-size: 0.92rem;
+}
+
+.install code {
+  text-align: left;
+  overflow-x: auto;
+  white-space: nowrap;
+  flex: 1;
+  color: var(--fg);
+}
+
+.install .prompt { color: var(--muted); margin-right: 8px; }
+
+.footer {
+  margin-top: 32px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+@media (max-width: 600px) {
+  main { padding: 56px 16px 80px; }
+  .avatar { width: 120px; height: 120px; }
+  .tagline { font-size: 1.4rem; }
+  .tagline br { display: none; }
+  .install { font-size: 0.8rem; padding: 12px 14px; }
+}

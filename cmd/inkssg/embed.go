@@ -8,8 +8,10 @@ import (
 
 //go:embed themes/minimal/layout.html
 //go:embed themes/minimal/styles.css
-var minimalTheme embed.FS
+//go:embed themes/landing/layout.html
+//go:embed themes/landing/styles.css
+var themes embed.FS
 
 func init() {
-	inkssg.SetMinimalTheme(minimalTheme)
+	inkssg.SetThemes(themes)
 }

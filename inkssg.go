@@ -15,24 +15,24 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-var minimalThemeFS embed.FS
-var hasMinimal bool
+var themeFS embed.FS
+var hasThemes bool
 
-func SetMinimalTheme(fs embed.FS) {
-	minimalThemeFS = fs
-	hasMinimal = true
+func SetThemes(fs embed.FS) {
+	themeFS = fs
+	hasThemes = true
 }
 
-func hasEmbeddedTheme() bool {
-	return hasMinimal
+func hasEmbeddedThemes() bool {
+	return hasThemes
 }
 
 type Site struct {
-	Dir       string
-	Pages     []Page
-	Output    string
-	Theme     string
-	ThemeData map[string]string
+	Dir    string
+	Pages  []Page
+	Output string
+	Theme  string
+	Config *SiteConfig
 }
 
 type Page struct {
@@ -47,12 +47,20 @@ type Page struct {
 
 type SiteConfig struct {
 	Name         string `yaml:"name"`
+	Avatar       string `yaml:"avatar"`
+	Install      string `yaml:"install"`
 	DefaultTheme string `yaml:"default_theme"`
 	OutputDir    string `yaml:"output_dir"`
+	Links        []Link `yaml:"links"`
+}
+
+type Link struct {
+	Name string `yaml:"name"`
+	URL  string `yaml:"url"`
 }
 
 type TemplateData struct {
-	Site    map[string]string
+	Site    *SiteConfig
 	Page    Page
 	Theme   map[string]string
 	Content template.HTML
@@ -79,11 +87,11 @@ func Build(paths ...string) error {
 
 func NewSite(dir string) (*Site, error) {
 	site := &Site{
-		Dir:       dir,
-		Pages:     []Page{},
-		Output:    "public",
-		Theme:     "minimal",
-		ThemeData: make(map[string]string),
+		Dir:    dir,
+		Pages:  []Page{},
+		Output: "public",
+		Theme:  "minimal",
+		Config: &SiteConfig{},
 	}
 
 	if err := site.loadConfig(); err != nil {
@@ -117,7 +125,7 @@ func (s *Site) loadConfig() error {
 		s.Theme = config.DefaultTheme
 	}
 
-	s.ThemeData["name"] = config.Name
+	s.Config = &config
 
 	return nil
 }
@@ -282,7 +290,7 @@ func (s *Site) resolveTheme() (string, error) {
 		return localTheme, nil
 	}
 
-	if hasEmbeddedTheme() {
+	if hasEmbeddedThemes() {
 		return "", nil // use embedded
 	}
 
@@ -295,10 +303,10 @@ func (s *Site) copyTheme(themeDir string) error {
 		return err
 	}
 
-	if themeDir == "" && hasEmbeddedTheme() {
+	if themeDir == "" && hasEmbeddedThemes() {
 		files := []string{"layout.html", "styles.css", "script.js"}
 		for _, f := range files {
-			data, err := minimalThemeFS.ReadFile("themes/minimal/" + f)
+			data, err := themeFS.ReadFile("themes/" + s.Theme + "/" + f)
 			if err == nil {
 				os.WriteFile(filepath.Join(outputTheme, f), data, 0644)
 			}
@@ -358,11 +366,15 @@ func copyDir(src, dst string) error {
 
 func (s *Site) buildPage(page Page, themeDir string) error {
 	var layout string
+	themeName := page.Theme
+	if themeName == "" {
+		themeName = s.Theme
+	}
 
-	if themeDir == "" && hasEmbeddedTheme() {
-		data, err := minimalThemeFS.ReadFile("themes/minimal/layout.html")
+	if themeDir == "" && hasEmbeddedThemes() {
+		data, err := themeFS.ReadFile("themes/" + themeName + "/layout.html")
 		if err != nil {
-			return fmt.Errorf("cannot read embedded layout: %w", err)
+			return fmt.Errorf("cannot read embedded layout for theme %q: %w", themeName, err)
 		}
 		layout = string(data)
 	} else if themeDir != "" {
@@ -372,13 +384,13 @@ func (s *Site) buildPage(page Page, themeDir string) error {
 		}
 		layout = string(data)
 	} else {
-		return fmt.Errorf("no layout found for theme %q", page.Theme)
+		return fmt.Errorf("no layout found for theme %q", themeName)
 	}
 
 	data := TemplateData{
-		Site:    s.ThemeData,
+		Site:    s.Config,
 		Page:    page,
-		Theme:   s.ThemeData,
+		Theme:   nil,
 		Content: template.HTML(page.ContentHTML),
 	}
 
