@@ -1,6 +1,7 @@
 # inkssg
 
-A small static site generator in Go. Built for sites with a couple of pages. Use as a library or CLI. No config needed for simple sites.
+A small static site generator in Go. Built for sites with a couple of pages.
+Sites with a couple of pages should not need 20 dependencies and a webpack config.
 
 ## Status
 

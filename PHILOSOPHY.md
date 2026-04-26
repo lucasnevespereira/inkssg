@@ -4,7 +4,9 @@ Small sites should not need 20 dependencies and a webpack config.
 
 ## Why inkssg exists
 
-I was tired of reaching for Hugo or Astro to build a one-page landing site. inkssg is for the sites where you want to edit one file, run one command, and deploy. No config needed for simple sites.
+Sometimes you just need a one-page site. You shouldn't need a framework to build it.
+
+inkssg is for when you want to edit one file, run one command, and deploy. No config needed for simple sites.
 
 ## Design principles
 
