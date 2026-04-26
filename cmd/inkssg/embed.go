@@ -8,8 +8,8 @@ import (
 
 //go:embed themes/minimal/layout.html
 //go:embed themes/minimal/styles.css
-//go:embed themes/landing/layout.html
-//go:embed themes/landing/styles.css
+//go:embed themes/devtool/layout.html
+//go:embed themes/devtool/styles.css
 var themes embed.FS
 
 func init() {
