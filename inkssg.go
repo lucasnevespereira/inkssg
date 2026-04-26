@@ -379,7 +379,7 @@ func (s *Site) copyTheme(themeDir string) error {
 	}
 
 	if themeDir == "" && hasEmbeddedThemes() {
-		files := []string{"layout.html", "styles.css", "script.js"}
+		files := []string{"styles.css", "script.js"}
 		for _, f := range files {
 			data, err := themeFS.ReadFile("themes/" + s.Theme + "/" + f)
 			if err == nil {
@@ -392,6 +392,9 @@ func (s *Site) copyTheme(themeDir string) error {
 	entries, _ := os.ReadDir(themeDir)
 	for _, entry := range entries {
 		if entry.IsDir() {
+			continue
+		}
+		if entry.Name() == "layout.html" {
 			continue
 		}
 		src := filepath.Join(themeDir, entry.Name())
