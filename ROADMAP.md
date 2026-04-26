@@ -5,35 +5,36 @@
 Goal: a user can `go get` inkssg and have a site running in minutes. No config needed for simple sites.
 
 ### Library API (primary DX)
-- [ ] `inkssg.Build()` — no args, defaults to current directory
-- [ ] `inkssg.Build(dir)` — explicit path (same behavior as CLI)
-- [ ] Auto-detect site structure (no `ink.yaml` required)
-- [ ] Defaults: `minimal` theme, `public/` output, `pages/` dir
-- [ ] Clear error if not a valid site: "No `pages/` folder found. Run `inkssg new .` to scaffold."
+- [x] `inkssg.Build()` — no args, defaults to current directory
+- [x] `inkssg.Build(dir)` — explicit path (same behavior as CLI)
+- [x] Auto-detect site structure (no `ink.yaml` required)
+- [x] Defaults: `minimal` theme, `public/` output, `pages/` dir
+- [x] Clear error if not a valid site
 
 ### CLI surface (wraps library)
-- [ ] `inkssg build` — calls `inkssg.Build(".")`
+- [x] `inkssg build` — calls `inkssg.Build(".")`
 - [ ] `inkssg new <path>` — scaffold from template
-- [ ] `inkssg version`
+- [x] `inkssg version`
 
 ### Build core
-- [ ] Discover pages under `pages/<name>/`
-- [ ] Parse YAML frontmatter from `content.md` and `content.html`
-- [ ] Render markdown with goldmark (autoid for headings)
-- [ ] Pass HTML body through unchanged for `content.html`
-- [ ] Apply `themes/<name>/layout.html` via `html/template` with `{{.Site}}`, `{{.Page}}`, `{{.Theme}}`, `{{.Content}}`
-- [ ] Output `<name>.html` at root of `public/`
-- [ ] Build all pages, report all errors, exit non-zero on any failure
-- [ ] Output: `✓ <page> → <file>` per page + summary line
+- [x] Discover pages under `pages/<name>/`
+- [x] Parse YAML frontmatter from `content.md` and `content.html`
+- [x] Render markdown with goldmark (autoid for headings)
+- [x] Pass HTML body through unchanged for `content.html`
+- [x] Apply `themes/<name>/layout.html` via `html/template` with `{{.Site}}`, `{{.Page}}`, `{{.Content}}`
+- [x] Output `<name>.html` at root of `public/`
+- [x] Build all pages, report all errors, exit non-zero on any failure
+- [x] Output: `✓ <page> → <file>` per page + summary line
 
 ### Themes
-- [ ] Theme resolution: local `themes/<name>/` → built-in (embedded) → error
-- [ ] Built-in `minimal` theme shipped via `go:embed`
-- [ ] Theme requires only `layout.html`; styles/script optional
-- [ ] Copy theme `styles.css`, `script.js` to `public/themes/<name>/`
+- [x] Theme resolution: local `themes/<name>/` → built-in (embedded) → error
+- [x] Built-in `minimal` theme shipped via `go:embed`
+- [x] Built-in `devtool` theme for dev tool landing pages
+- [x] Theme requires only `layout.html`; styles/script optional
+- [x] Copy theme `styles.css`, `script.js` to `public/themes/<name>/`
 
 ### Assets
-- [ ] Copy `assets/*` → `public/assets/` (one rule, no per-page folders)
+- [x] Copy `assets/*` → `public/assets/` (one rule, no per-page folders)
 
 ### Examples + CI
 - [ ] `examples/library/` — `go run main.go` builds the site
