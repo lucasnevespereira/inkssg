@@ -26,11 +26,12 @@ func hasEmbeddedThemes() bool {
 }
 
 type Site struct {
-	Dir    string
-	Pages  []Page
-	Output string
-	Theme  string
-	Config *SiteConfig
+	Dir      string
+	Pages    []Page
+	Output   string
+	Theme    string
+	PagesDir string
+	Config   *SiteConfig
 }
 
 type Page struct {
@@ -51,6 +52,7 @@ type SiteConfig struct {
 	Install      string    `yaml:"install"`
 	DefaultTheme string    `yaml:"default_theme"`
 	OutputDir    string    `yaml:"output_dir"`
+	PagesDir     string    `yaml:"pages_dir"`
 	Links        []Link    `yaml:"links"`
 	Projects     []Project `yaml:"projects"`
 	Meta         Meta      `yaml:"meta"`
@@ -164,11 +166,12 @@ func Build(paths ...string) error {
 
 func NewSite(dir string) (*Site, error) {
 	site := &Site{
-		Dir:    dir,
-		Pages:  []Page{},
-		Output: "public",
-		Theme:  "minimal",
-		Config: &SiteConfig{},
+		Dir:      dir,
+		Pages:    []Page{},
+		Output:   "public",
+		Theme:    "minimal",
+		PagesDir: "pages",
+		Config:   &SiteConfig{},
 	}
 
 	if err := site.loadConfig(); err != nil {
@@ -202,20 +205,24 @@ func (s *Site) loadConfig() error {
 		s.Theme = config.DefaultTheme
 	}
 
+	if config.PagesDir != "" {
+		s.PagesDir = config.PagesDir
+	}
+
 	s.Config = &config
 
 	return nil
 }
 
 func (s *Site) detect() error {
-	pagesDir := filepath.Join(s.Dir, "pages")
+	pagesDir := filepath.Join(s.Dir, s.PagesDir)
 	if _, err := os.Stat(pagesDir); os.IsNotExist(err) {
-		return fmt.Errorf("no pages/ folder found. Run 'inkssg new .' to scaffold a site.")
+		return fmt.Errorf("no %s/ folder found. Run 'inkssg new .' to scaffold a site.", s.PagesDir)
 	}
 
 	entries, err := os.ReadDir(pagesDir)
 	if err != nil {
-		return fmt.Errorf("cannot read pages/: %w", err)
+		return fmt.Errorf("cannot read %s/: %w", s.PagesDir, err)
 	}
 
 	for _, entry := range entries {

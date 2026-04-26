@@ -197,7 +197,8 @@ Supported fields:
 
 - `name` — site name (available as `.Site.Name` in templates)
 - `default_theme` — theme to use if not set in frontmatter
-- `output_dir` — output directory (defaults to `public/`)
+- `output_dir` — output directory (defaults to `public/`). Must be inside the project root.
+- `pages_dir` — where pages live (defaults to `pages/`)
 
 ## ink.yaml vs frontmatter
 
