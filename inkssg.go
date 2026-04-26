@@ -15,7 +15,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-//go:embed themes/*/*.html themes/*/*.css
+//go:embed themes/*/*.html themes/*/*.css themes/*/*.js
 var embeddedThemes embed.FS
 
 var themeFS embed.FS = embeddedThemes
@@ -44,17 +44,32 @@ type Page struct {
 }
 
 type SiteConfig struct {
-	Name         string `yaml:"name"`
-	Avatar       string `yaml:"avatar"`
-	Install      string `yaml:"install"`
-	DefaultTheme string `yaml:"default_theme"`
-	OutputDir    string `yaml:"output_dir"`
-	Links        []Link `yaml:"links"`
+	Name         string  `yaml:"name"`
+	Avatar       string  `yaml:"avatar"`
+	Bio          string  `yaml:"bio"`
+	Install      string  `yaml:"install"`
+	DefaultTheme string  `yaml:"default_theme"`
+	OutputDir    string  `yaml:"output_dir"`
+	Links        []Link  `yaml:"links"`
+	Meta         Meta    `yaml:"meta"`
+	Contact      Contact `yaml:"contact"`
 }
 
 type Link struct {
 	Name string `yaml:"name"`
 	URL  string `yaml:"url"`
+}
+
+type Meta struct {
+	Lang        string `yaml:"lang"`
+	Description string `yaml:"description"`
+	Title       string `yaml:"title"`
+	Author      string `yaml:"author"`
+	SiteUrl     string `yaml:"siteUrl"`
+}
+
+type Contact struct {
+	Socials []Link `yaml:"socials"`
 }
 
 type TemplateData struct {
