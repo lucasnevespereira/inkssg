@@ -44,15 +44,25 @@ type Page struct {
 }
 
 type SiteConfig struct {
-	Name         string  `yaml:"name"`
-	Avatar       string  `yaml:"avatar"`
-	Bio          string  `yaml:"bio"`
-	Install      string  `yaml:"install"`
-	DefaultTheme string  `yaml:"default_theme"`
-	OutputDir    string  `yaml:"output_dir"`
-	Links        []Link  `yaml:"links"`
-	Meta         Meta    `yaml:"meta"`
-	Contact      Contact `yaml:"contact"`
+	Name         string    `yaml:"name"`
+	Avatar       string    `yaml:"avatar"`
+	Bio          string    `yaml:"bio"`
+	Status       string    `yaml:"status"`
+	Install      string    `yaml:"install"`
+	DefaultTheme string    `yaml:"default_theme"`
+	OutputDir    string    `yaml:"output_dir"`
+	Links        []Link    `yaml:"links"`
+	Projects     []Project `yaml:"projects"`
+	Meta         Meta      `yaml:"meta"`
+	Contact      Contact   `yaml:"contact"`
+}
+
+type Project struct {
+	Name        string `yaml:"name"`
+	Description string `yaml:"description"`
+	URL         string `yaml:"url"`
+	Image       string `yaml:"image"`
+	Badge       string `yaml:"badge"`
 }
 
 type Link struct {
