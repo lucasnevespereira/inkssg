@@ -1,0 +1,8 @@
+name: Library Example
+default_theme: minimal
+output_dir: public
+
+meta:
+  lang: en
+  title: Library Example
+  description: Built by calling inkssg.Build() from Go.

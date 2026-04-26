@@ -35,6 +35,8 @@ go install github.com/snowztech/inkssg/cmd/inkssg@latest
 inkssg build
 ```
 
+Or download a binary from [Releases](https://github.com/snowztech/inkssg/releases).
+
 ## Convention
 
 ```

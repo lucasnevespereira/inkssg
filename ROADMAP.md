@@ -13,7 +13,7 @@ Goal: a user can `go get` inkssg and have a site running in minutes. No config n
 
 ### CLI surface (wraps library)
 - [x] `inkssg build` — calls `inkssg.Build(".")`
-- [ ] `inkssg new <path>` — scaffold from template
+- [x] `inkssg new <path>` — scaffold from template
 - [x] `inkssg version`
 
 ### Build core
@@ -37,10 +37,10 @@ Goal: a user can `go get` inkssg and have a site running in minutes. No config n
 - [x] Copy `assets/*` → `public/assets/` (one rule, no per-page folders)
 
 ### Examples + CI
-- [ ] `examples/library/` — `go run main.go` builds the site
-- [ ] `examples/minimal/` — 1 page, default theme
-- [ ] `examples/multi-page/` — multiple pages, shared theme
-- [ ] CI: build every example on push
+- [x] `examples/library/` — `go run main.go` builds the site
+- [x] `examples/minimal/` — 1 page, default theme
+- [x] `examples/multi-page/` — multiple pages, shared theme
+- [x] CI: build every example on push
 
 Note: `ink.yaml` is optional in v0.1. Add it only when you need site-wide data (name, links, bio).
 

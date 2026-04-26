@@ -1,0 +1,16 @@
+name: Multi-Page Example
+default_theme: minimal
+output_dir: public
+
+meta:
+  lang: en
+  title: Multi-Page Example
+  description: Several pages sharing one theme.
+
+links:
+  - name: Home
+    url: /index.html
+  - name: About
+    url: /about.html
+  - name: Projects
+    url: /projects.html

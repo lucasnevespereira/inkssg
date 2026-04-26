@@ -1,0 +1,38 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: Build inkssg
+        run: |
+          VERSION=${GITHUB_REF_NAME}
+          LDFLAGS="-X main.version=${VERSION}"
+          GOOS=linux GOARCH=amd64 go build -ldflags "$LDFLAGS" -o inkssg-linux-amd64 ./cmd/inkssg
+          GOOS=linux GOARCH=arm64 go build -ldflags "$LDFLAGS" -o inkssg-linux-arm64 ./cmd/inkssg
+          GOOS=darwin GOARCH=amd64 go build -ldflags "$LDFLAGS" -o inkssg-darwin-amd64 ./cmd/inkssg
+          GOOS=darwin GOARCH=arm64 go build -ldflags "$LDFLAGS" -o inkssg-darwin-arm64 ./cmd/inkssg
+
+      - name: Create release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            inkssg-linux-amd64
+            inkssg-linux-arm64
+            inkssg-darwin-amd64
+            inkssg-darwin-arm64
+          generate_release_notes: true
