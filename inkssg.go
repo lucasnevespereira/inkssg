@@ -15,13 +15,11 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-var themeFS embed.FS
-var hasThemes bool
+//go:embed themes/*/*.html themes/*/*.css
+var embeddedThemes embed.FS
 
-func SetThemes(fs embed.FS) {
-	themeFS = fs
-	hasThemes = true
-}
+var themeFS embed.FS = embeddedThemes
+var hasThemes bool = true
 
 func hasEmbeddedThemes() bool {
 	return hasThemes
