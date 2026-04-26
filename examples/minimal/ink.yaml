@@ -1,0 +1,8 @@
+name: Minimal Example
+default_theme: minimal
+output_dir: public
+
+meta:
+  lang: en
+  title: Minimal Example
+  description: One page, default theme.

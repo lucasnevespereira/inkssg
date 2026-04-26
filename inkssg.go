@@ -79,6 +79,60 @@ type TemplateData struct {
 	Content template.HTML
 }
 
+func Scaffold(dir string) error {
+	if dir == "" {
+		dir = "."
+	}
+
+	absDir, err := filepath.Abs(dir)
+	if err != nil {
+		return fmt.Errorf("invalid path: %w", err)
+	}
+
+	pagesDir := filepath.Join(absDir, "pages")
+	if _, err := os.Stat(pagesDir); err == nil {
+		return fmt.Errorf("pages/ already exists at %s — refusing to overwrite", absDir)
+	}
+
+	indexDir := filepath.Join(pagesDir, "index")
+	if err := os.MkdirAll(indexDir, 0755); err != nil {
+		return fmt.Errorf("creating pages/index: %w", err)
+	}
+
+	indexContent := `---
+title: Hello
+description: My new inkssg site
+---
+
+# Hello
+
+Edit ` + "`pages/index/content.md`" + ` and run ` + "`inkssg build`" + `.
+`
+	if err := os.WriteFile(filepath.Join(indexDir, "content.md"), []byte(indexContent), 0644); err != nil {
+		return fmt.Errorf("writing content.md: %w", err)
+	}
+
+	configPath := filepath.Join(absDir, "ink.yaml")
+	if _, err := os.Stat(configPath); os.IsNotExist(err) {
+		sample := `name: My Site
+default_theme: minimal
+output_dir: public
+
+meta:
+  lang: en
+  title: My Site
+  description: A small site built with inkssg
+`
+		if err := os.WriteFile(configPath, []byte(sample), 0644); err != nil {
+			return fmt.Errorf("writing ink.yaml: %w", err)
+		}
+	}
+
+	fmt.Printf("scaffolded site at %s\n", absDir)
+	fmt.Println("next: inkssg build")
+	return nil
+}
+
 func Build(paths ...string) error {
 	dir := "."
 	if len(paths) > 0 {
@@ -180,9 +234,7 @@ func (s *Site) detect() error {
 			return fmt.Errorf("%s: %w", entry.Name(), err)
 		}
 
-		if page.Theme != "" {
-			page.Theme = page.Theme
-		} else {
+		if page.Theme == "" {
 			page.Theme = s.Theme
 		}
 
