@@ -1,6 +1,16 @@
+<div align="center">
+
 # inkssg
 
-A small static site generator in Go for sites with a few pages. No node, no plugins, no config required.
+***A small static site generator in Go. No node, no plugins, no config required.***
+
+[![Version](https://img.shields.io/github/v/release/snowztech/inkssg?logo=github)](https://github.com/snowztech/inkssg/releases)
+[![Stars](https://img.shields.io/github/stars/snowztech/inkssg?logo=github)](https://github.com/snowztech/inkssg/stargazers)
+[![Issues](https://img.shields.io/github/issues/snowztech/inkssg?logo=github)](https://github.com/snowztech/inkssg/issues)
+[![Contributors](https://img.shields.io/github/contributors/snowztech/inkssg?logo=github)](https://github.com/snowztech/inkssg/graphs/contributors)
+[![License](https://img.shields.io/github/license/snowztech/inkssg)](LICENSE)
+
+</div>
 
 - Markdown for prose, raw HTML when you want full control
 - Frontmatter for page metadata, `ink.yaml` for site-wide data
