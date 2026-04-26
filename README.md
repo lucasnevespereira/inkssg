@@ -12,30 +12,32 @@ Features:
 - Single assets/ directory
 - No node, no plugins
 
-## Quick start (library)
-
-```go
-package main
-
-import inkssg "github.com/snowztech/inkssg"
-
-func main() {
-    inkssg.Build()
-}
-```
-
-```
-go run main.go
-```
-
-## Quick start (CLI)
+## Install
 
 ```
 go install github.com/snowztech/inkssg/cmd/inkssg@latest
-inkssg build
 ```
 
 Or download a binary from [Releases](https://github.com/snowztech/inkssg/releases).
+
+## Quick start
+
+```
+inkssg new my-site
+inkssg build my-site
+```
+
+Output lands in `my-site/public/`. Open `index.html`.
+
+## Use as a library
+
+```go
+import "github.com/snowztech/inkssg"
+
+inkssg.Build(".")
+```
+
+Same behavior as the CLI. See [`examples/library`](examples/library) for a runnable version.
 
 ## Convention
 
