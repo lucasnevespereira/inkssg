@@ -313,8 +313,38 @@ func (p *Page) renderMarkdown(data []byte, contentType string) string {
 	return buf.String()
 }
 
+func (s *Site) validateOutput() error {
+	if strings.TrimSpace(s.Output) == "" {
+		return fmt.Errorf("output_dir cannot be empty")
+	}
+
+	absDir, err := filepath.Abs(s.Dir)
+	if err != nil {
+		return fmt.Errorf("invalid project dir: %w", err)
+	}
+	absOut, err := filepath.Abs(filepath.Join(s.Dir, s.Output))
+	if err != nil {
+		return fmt.Errorf("invalid output_dir: %w", err)
+	}
+
+	if absOut == absDir {
+		return fmt.Errorf("output_dir cannot be the project root (would delete sources on rebuild)")
+	}
+
+	rel, err := filepath.Rel(absDir, absOut)
+	if err != nil || strings.HasPrefix(rel, "..") {
+		return fmt.Errorf("output_dir must be inside the project directory, got %q", s.Output)
+	}
+
+	return nil
+}
+
 func (s *Site) Build() error {
 	start := time.Now()
+
+	if err := s.validateOutput(); err != nil {
+		return err
+	}
 
 	if err := os.RemoveAll(filepath.Join(s.Dir, s.Output)); err != nil {
 		return fmt.Errorf("cannot clean output dir: %w", err)
