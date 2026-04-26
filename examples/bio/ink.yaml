@@ -1,0 +1,31 @@
+name: snowz.ai
+avatar: /assets/img/avatar.png
+bio: Open Source Engineer · AI workflows and tools
+status: currently building vikusha
+default_theme: bio
+output_dir: public
+
+meta:
+  lang: en
+  title: snowz.ai
+  description: AI workflows and developer tools.
+  siteUrl: https://snowz.ai
+
+projects:
+  - name: vikusha
+    description: framework for AI assistants
+    url: https://github.com/snowztech/vikusha
+    badge: go · wip
+  - name: nevinho
+    description: my personal AI assistant
+    url: https://github.com/lucasnevespereira/nevinho
+    badge: go
+
+contact:
+  socials:
+    - name: github
+      url: https://github.com/snowztech
+    - name: youtube
+      url: https://www.youtube.com/c/lucaasnp
+    - name: tiktok
+      url: https://www.tiktok.com/@snowz.ai

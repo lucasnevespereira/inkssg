@@ -25,6 +25,9 @@ jobs:
       - name: Build example - multi-page
         run: go run ./cmd/inkssg build ./examples/multi-page
 
+      - name: Build example - bio
+        run: go run ./cmd/inkssg build ./examples/bio
+
       - name: Build example - library
         working-directory: examples/library
         run: |

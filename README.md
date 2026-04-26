@@ -79,7 +79,7 @@ Build output goes to `public/`.
 
 ## Themes
 
-inkssg ships with two themes: `minimal` and `devtool`. Pick one in `ink.yaml`:
+inkssg ships with three themes: `minimal`, `devtool`, and `bio`. Pick one in `ink.yaml`:
 
 ```yaml
 default_theme: devtool
