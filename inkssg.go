@@ -2,7 +2,10 @@ package inkssg
 
 import (
 	"bytes"
+	"embed"
 	"fmt"
+	"html/template"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -12,10 +15,24 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+var minimalThemeFS embed.FS
+var hasMinimal bool
+
+func SetMinimalTheme(fs embed.FS) {
+	minimalThemeFS = fs
+	hasMinimal = true
+}
+
+func hasEmbeddedTheme() bool {
+	return hasMinimal
+}
+
 type Site struct {
-	Dir    string
-	Pages  []Page
-	Output string
+	Dir       string
+	Pages     []Page
+	Output    string
+	Theme     string
+	ThemeData map[string]string
 }
 
 type Page struct {
@@ -32,6 +49,13 @@ type SiteConfig struct {
 	Name         string `yaml:"name"`
 	DefaultTheme string `yaml:"default_theme"`
 	OutputDir    string `yaml:"output_dir"`
+}
+
+type TemplateData struct {
+	Site    map[string]string
+	Page    Page
+	Theme   map[string]string
+	Content template.HTML
 }
 
 func Build(paths ...string) error {
@@ -55,9 +79,15 @@ func Build(paths ...string) error {
 
 func NewSite(dir string) (*Site, error) {
 	site := &Site{
-		Dir:    dir,
-		Pages:  []Page{},
-		Output: "public",
+		Dir:       dir,
+		Pages:     []Page{},
+		Output:    "public",
+		Theme:     "minimal",
+		ThemeData: make(map[string]string),
+	}
+
+	if err := site.loadConfig(); err != nil {
+		// config is optional
 	}
 
 	if err := site.detect(); err != nil {
@@ -65,6 +95,31 @@ func NewSite(dir string) (*Site, error) {
 	}
 
 	return site, nil
+}
+
+func (s *Site) loadConfig() error {
+	configPath := filepath.Join(s.Dir, "ink.yaml")
+	data, err := os.ReadFile(configPath)
+	if err != nil {
+		return nil
+	}
+
+	var config SiteConfig
+	if err := yaml.Unmarshal(data, &config); err != nil {
+		return fmt.Errorf("invalid ink.yaml: %w", err)
+	}
+
+	if config.OutputDir != "" {
+		s.Output = config.OutputDir
+	}
+
+	if config.DefaultTheme != "" {
+		s.Theme = config.DefaultTheme
+	}
+
+	s.ThemeData["name"] = config.Name
+
+	return nil
 }
 
 func (s *Site) detect() error {
@@ -102,6 +157,12 @@ func (s *Site) detect() error {
 
 		if err := page.parseFrontmatter(contentType); err != nil {
 			return fmt.Errorf("%s: %w", entry.Name(), err)
+		}
+
+		if page.Theme != "" {
+			page.Theme = page.Theme
+		} else {
+			page.Theme = s.Theme
 		}
 
 		s.Pages = append(s.Pages, page)
@@ -180,9 +241,22 @@ func (s *Site) Build() error {
 		return fmt.Errorf("cannot create output dir: %w", err)
 	}
 
+	themeDir, err := s.resolveTheme()
+	if err != nil {
+		return err
+	}
+
+	if err := s.copyTheme(themeDir); err != nil {
+		return fmt.Errorf("copying theme: %w", err)
+	}
+
+	if err := s.copyAssets(); err != nil {
+		return fmt.Errorf("copying assets: %w", err)
+	}
+
 	failed := 0
 	for _, page := range s.Pages {
-		if err := s.buildPage(page); err != nil {
+		if err := s.buildPage(page, themeDir); err != nil {
 			fmt.Fprintf(os.Stderr, "✗ %s: %v\n", page.Name, err)
 			failed++
 		} else {
@@ -202,19 +276,139 @@ func (s *Site) Build() error {
 	return nil
 }
 
-func (s *Site) buildPage(page Page) error {
+func (s *Site) resolveTheme() (string, error) {
+	localTheme := filepath.Join(s.Dir, "themes", s.Theme)
+	if _, err := os.Stat(localTheme); err == nil {
+		return localTheme, nil
+	}
+
+	if hasEmbeddedTheme() {
+		return "", nil // use embedded
+	}
+
+	return "", fmt.Errorf("theme %q not found (local or built-in)", s.Theme)
+}
+
+func (s *Site) copyTheme(themeDir string) error {
+	outputTheme := filepath.Join(s.Dir, s.Output, "themes", s.Theme)
+	if err := os.MkdirAll(outputTheme, 0755); err != nil {
+		return err
+	}
+
+	if themeDir == "" && hasEmbeddedTheme() {
+		files := []string{"layout.html", "styles.css", "script.js"}
+		for _, f := range files {
+			data, err := minimalThemeFS.ReadFile("themes/minimal/" + f)
+			if err == nil {
+				os.WriteFile(filepath.Join(outputTheme, f), data, 0644)
+			}
+		}
+		return nil
+	}
+
+	entries, _ := os.ReadDir(themeDir)
+	for _, entry := range entries {
+		if entry.IsDir() {
+			continue
+		}
+		src := filepath.Join(themeDir, entry.Name())
+		dst := filepath.Join(outputTheme, entry.Name())
+		data, _ := os.ReadFile(src)
+		os.WriteFile(dst, data, 0644)
+	}
+
+	return nil
+}
+
+func (s *Site) copyAssets() error {
+	assetsDir := filepath.Join(s.Dir, "assets")
+	if _, err := os.Stat(assetsDir); os.IsNotExist(err) {
+		return nil
+	}
+
+	outputAssets := filepath.Join(s.Dir, s.Output, "assets")
+	if err := os.MkdirAll(outputAssets, 0755); err != nil {
+		return err
+	}
+
+	return copyDir(assetsDir, outputAssets)
+}
+
+func copyDir(src, dst string) error {
+	entries, err := os.ReadDir(src)
+	if err != nil {
+		return err
+	}
+
+	for _, entry := range entries {
+		srcPath := filepath.Join(src, entry.Name())
+		dstPath := filepath.Join(dst, entry.Name())
+
+		if entry.IsDir() {
+			os.MkdirAll(dstPath, 0755)
+			copyDir(srcPath, dstPath)
+		} else {
+			data, _ := os.ReadFile(srcPath)
+			os.WriteFile(dstPath, data, 0644)
+		}
+	}
+
+	return nil
+}
+
+func (s *Site) buildPage(page Page, themeDir string) error {
+	var layout string
+
+	if themeDir == "" && hasEmbeddedTheme() {
+		data, err := minimalThemeFS.ReadFile("themes/minimal/layout.html")
+		if err != nil {
+			return fmt.Errorf("cannot read embedded layout: %w", err)
+		}
+		layout = string(data)
+	} else if themeDir != "" {
+		data, err := os.ReadFile(filepath.Join(themeDir, "layout.html"))
+		if err != nil {
+			return fmt.Errorf("cannot read layout: %w", err)
+		}
+		layout = string(data)
+	} else {
+		return fmt.Errorf("no layout found for theme %q", page.Theme)
+	}
+
+	data := TemplateData{
+		Site:    s.ThemeData,
+		Page:    page,
+		Theme:   s.ThemeData,
+		Content: template.HTML(page.ContentHTML),
+	}
+
+	tmpl, err := template.New("layout").Parse(layout)
+	if err != nil {
+		return fmt.Errorf("parsing template: %w", err)
+	}
+
+	var buf bytes.Buffer
+	if err := tmpl.Execute(&buf, data); err != nil {
+		return fmt.Errorf("executing template: %w", err)
+	}
+
 	outputPath := filepath.Join(s.Dir, s.Output, page.Name+".html")
+	return os.WriteFile(outputPath, buf.Bytes(), 0644)
+}
 
-	html := fmt.Sprintf(`<!DOCTYPE html>
-<html>
-<head>
-  <title>%s</title>
-  <meta name="description" content="%s">
-</head>
-<body>
-%s
-</body>
-</html>`, page.Title, page.Description, page.ContentHTML)
+func CopyFile(src, dst string) error {
+	sourceFile, err := os.Open(src)
+	if err != nil {
+		return err
+	}
+	defer sourceFile.Close()
 
-	return os.WriteFile(outputPath, []byte(html), 0644)
+	destFile, err := os.Create(dst)
+	if err != nil {
+		return err
+	}
+	defer destFile.Close()
+
+	_, err = io.Copy(destFile, sourceFile)
+	return err
 }
