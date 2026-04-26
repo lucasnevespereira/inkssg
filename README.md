@@ -12,6 +12,12 @@
 
 </div>
 
+## What is inkssg?
+
+A small site doesn't need a node toolchain, a webpack config, and twenty dependencies. inkssg started as a single `main.go` powering a personal site. Now it's a Go library and a CLI you can drop into any small project: a landing page, a bio, a few pages of docs.
+
+If you need blog collections, i18n, or a plugin ecosystem, use Hugo or Astro. inkssg stays small on purpose.
+
 - Markdown for prose, raw HTML when you want full control
 - Frontmatter for page metadata, `ink.yaml` for site-wide data
 - Built-in themes you can override with your own
