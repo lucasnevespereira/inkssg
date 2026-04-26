@@ -39,7 +39,13 @@ inkssg new my-site
 inkssg build my-site
 ```
 
-Output goes to `my-site/public/`. Open `index.html` to see it.
+Output goes to `my-site/public/`. Preview locally:
+
+```
+python3 -m http.server --directory my-site/public
+```
+
+Then open http://localhost:8000.
 
 To change the page, edit `my-site/pages/index/content.md` and run `inkssg build my-site` again.
 
