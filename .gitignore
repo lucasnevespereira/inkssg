@@ -8,3 +8,6 @@ bin/
 
 # FS
 .DS_STORE
+
+# internal
+ignored/
