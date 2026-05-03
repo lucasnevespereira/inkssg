@@ -49,6 +49,14 @@ Then open http://localhost:8000.
 
 To change the page, edit `my-site/pages/index/content.md` and run `inkssg build my-site` again.
 
+## Dev server
+
+```
+inkssg serve my-site
+```
+
+Builds the site, serves it at `http://localhost:3000`, watches your sources, and reloads the browser on every change. Pass `--addr :4000` to use a different port.
+
 ## Use as a library
 
 ```

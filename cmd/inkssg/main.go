@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"runtime/debug"
+	"strings"
 
 	"github.com/snowztech/inkssg"
 )
@@ -47,17 +48,43 @@ func main() {
 			fmt.Fprintf(os.Stderr, "error: %v\n", err)
 			os.Exit(1)
 		}
+	case "serve":
+		path, addr := parseServeArgs(os.Args[2:])
+		if err := inkssg.Serve(path, inkssg.ServeOptions{Addr: addr}); err != nil {
+			fmt.Fprintf(os.Stderr, "error: %v\n", err)
+			os.Exit(1)
+		}
 	default:
 		usage()
 		os.Exit(1)
 	}
 }
 
+func parseServeArgs(args []string) (path, addr string) {
+	path = "."
+	addr = ":3000"
+	for i := 0; i < len(args); i++ {
+		switch args[i] {
+		case "--addr":
+			if i+1 < len(args) {
+				addr = args[i+1]
+				i++
+			}
+		default:
+			if !strings.HasPrefix(args[i], "-") {
+				path = args[i]
+			}
+		}
+	}
+	return path, addr
+}
+
 func usage() {
 	fmt.Println("inkssg — a small static site generator")
 	fmt.Println()
 	fmt.Println("Usage:")
-	fmt.Println("  inkssg new [path]     scaffold a new site")
-	fmt.Println("  inkssg build [path]   build the site into ./public")
-	fmt.Println("  inkssg version        print version")
+	fmt.Println("  inkssg new [path]              scaffold a new site")
+	fmt.Println("  inkssg build [path]            build the site into ./public")
+	fmt.Println("  inkssg serve [path] [--addr]   build, serve, watch, live-reload")
+	fmt.Println("  inkssg version                 print version")
 }

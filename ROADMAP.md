@@ -46,7 +46,7 @@ Note: `ink.yaml` is optional in v0.1. Add it only when you need site-wide data (
 
 ## v0.2 — Polish + daily iteration
 
-- [ ] `inkssg serve` — local server with file watcher and auto-rebuild
+- [x] `inkssg serve` — local server with file watcher and auto-rebuild
 - [ ] Options: `FromConfig`, `WithTheme`, `WithOutputDir`, `WithPagesDir`
 - [ ] Hooks: `BeforeBuild`, `AfterBuild`
 - [ ] CSS/JS minification
